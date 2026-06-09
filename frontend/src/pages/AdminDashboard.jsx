@@ -38,7 +38,7 @@ function AdminDashboard() {
     const fetchStats = async () => {
         try {
             const res = await axios.get(
-                "http://localhost:5000/api/candidates/stats"
+                "https://csr-candidate-backend.onrender.com/api/candidates/stats"
             );
 
             setStats(res.data.data);
