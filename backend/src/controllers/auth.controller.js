@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const ADMIN_EMAIL = "admin@csr.com";
-const ADMIN_PASSWORD = "Admin@123";
+const ADMIN_PASSWORD = "Admincsr@123";
 
 const login = (req, res) => {
   const { email, password } = req.body;
