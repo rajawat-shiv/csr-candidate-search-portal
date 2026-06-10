@@ -21,22 +21,20 @@ function excelDateToJSDate(value) {
 
 const uploadExcel = async (req, res) => {
   try {
+
     const workbook = XLSX.read(
       req.file.buffer,
       {
         type: "buffer",
       }
     );
+
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
 
     const data = XLSX.utils.sheet_to_json(sheet, {
       defval: "",
     });
-
-    console.log("FIRST ROW =>", data[0]);
-
-    db.run("DELETE FROM candidates");
 
     let totalInserted = 0;
 
@@ -45,101 +43,122 @@ const uploadExcel = async (req, res) => {
     let c3 = 0;
 
     const query = `
-  INSERT INTO candidates (
-    candidate_name,
-    contact_number,
-    attendance_app_id,
-    ho_id,
-    ojt_start_date,
-    ojt_end_date,
-    lwd,
-    vertical_type
-  )
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-`;
+      INSERT INTO candidates (
+        candidate_name,
+        contact_number,
+        attendance_app_id,
+        ho_id,
+        ojt_start_date,
+        ojt_end_date,
+        lwd,
+        vertical_type
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
 
-    data.forEach((row) => {
+    db.serialize(() => {
 
-      // Candidate 1
-      if (
-        row["Candidate Name"] &&
-        row["Candidate Name"] !== "-"
-      ) {
-        c1++;
-        totalInserted++;
+      db.run("DELETE FROM candidates");
 
-        db.run(query, [
-          row["Candidate Name"] || "",
-          String(row["Contact Number"] || "").replace(".0", ""),
-          row["Attendance App ID"] || "",
-          row["HO ID"] || "",
-          excelDateToJSDate(row["OJT Start Date"]),
-          excelDateToJSDate(row["OJT End Date"]),
-          excelDateToJSDate(row["LWD"]),
-          row["Vertical Type"] || "MX",
-        ]);
-      }
+      db.run("BEGIN TRANSACTION");
 
-      // Candidate 2
-      if (
-        row["Candidate Name_1"] &&
-        row["Candidate Name_1"] !== "-"
-      ) {
-        c2++;
-        totalInserted++;
+      data.forEach((row) => {
 
-        db.run(query, [
-          row["Candidate Name_1"] || "",
-          String(row["Contact Number_1"] || "").replace(".0", ""),
-          row["Attendance App ID_1"] || "",
-          row["HO ID_1"] || "",
-          excelDateToJSDate(row["OJT start date"]),
-          excelDateToJSDate(row["OJT end date"]),
-          excelDateToJSDate(row["LWD_1"]),
-          row["Vertical Type"] || "MX",
-        ]);
-      }
+        // Candidate 1
+        if (
+          row["Candidate Name"] &&
+          row["Candidate Name"] !== "-"
+        ) {
+          c1++;
+          totalInserted++;
 
-      // Candidate 3
-      if (
-        row["Candidate Name_2"] &&
-        row["Candidate Name_2"] !== "-"
-      ) {
-        c3++;
-        totalInserted++;
+          db.run(query, [
+            row["Candidate Name"] || "",
+            String(row["Contact Number"] || "").replace(".0", ""),
+            row["Attendance App ID"] || "",
+            row["HO ID"] || "",
+            excelDateToJSDate(row["OJT Start Date"]),
+            excelDateToJSDate(row["OJT End Date"]),
+            excelDateToJSDate(row["LWD"]),
+            row["Vertical Type"] || "MX",
+          ]);
+        }
 
-        db.run(query, [
-          row["Candidate Name_2"] || "",
-          String(row["Contact Number_2"] || "").replace(".0", ""),
-          row["Attendance App ID_2"] || "",
-          row["HO ID_2"] || "",
-          excelDateToJSDate(row["OJT start date_1"]),
-          excelDateToJSDate(row["OJT end date_1"]),
-          excelDateToJSDate(row["LWD_2"]),
-          row["Vertical Type"] || "MX",
-        ]);
-      }
+        // Candidate 2
+        if (
+          row["Candidate Name_1"] &&
+          row["Candidate Name_1"] !== "-"
+        ) {
+          c2++;
+          totalInserted++;
+
+          db.run(query, [
+            row["Candidate Name_1"] || "",
+            String(row["Contact Number_1"] || "").replace(".0", ""),
+            row["Attendance App ID_1"] || "",
+            row["HO ID_1"] || "",
+            excelDateToJSDate(row["OJT start date"]),
+            excelDateToJSDate(row["OJT end date"]),
+            excelDateToJSDate(row["LWD_1"]),
+            row["Vertical Type"] || "MX",
+          ]);
+        }
+
+        // Candidate 3
+        if (
+          row["Candidate Name_2"] &&
+          row["Candidate Name_2"] !== "-"
+        ) {
+          c3++;
+          totalInserted++;
+
+          db.run(query, [
+            row["Candidate Name_2"] || "",
+            String(row["Contact Number_2"] || "").replace(".0", ""),
+            row["Attendance App ID_2"] || "",
+            row["HO ID_2"] || "",
+            excelDateToJSDate(row["OJT start date_1"]),
+            excelDateToJSDate(row["OJT end date_1"]),
+            excelDateToJSDate(row["LWD_2"]),
+            row["Vertical Type"] || "MX",
+          ]);
+        }
+
+      });
+
+      db.run("COMMIT", (err) => {
+
+        if (err) {
+          return res.status(500).json({
+            success: false,
+            message: err.message,
+          });
+        }
+
+        res.status(200).json({
+          success: true,
+          message: `${totalInserted} candidates imported`,
+          stats: {
+            candidate1: c1,
+            candidate2: c2,
+            candidate3: c3,
+            total: totalInserted,
+          },
+        });
+
+      });
+
     });
 
-
-
-    res.status(200).json({
-      success: true,
-      message: `${totalInserted} candidates imported`,
-      stats: {
-        candidate1: c1,
-        candidate2: c2,
-        candidate3: c3,
-        total: totalInserted,
-      },
-    });
   } catch (error) {
+
     console.log(error);
 
     res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };
 
