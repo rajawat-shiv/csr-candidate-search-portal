@@ -21,11 +21,6 @@ function excelDateToJSDate(value) {
 
 const uploadExcel = async (req, res) => {
   try {
-    console.log("Upload API Hit");
-    console.log("FILE => ", req.file);
-
-    console.log("BUFFER => ", req.file?.buffer);
-    console.log("PATH => ", req.file?.path);
     const workbook = XLSX.read(
       req.file.buffer,
       {
