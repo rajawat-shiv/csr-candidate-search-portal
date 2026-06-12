@@ -20,7 +20,13 @@ function excelDateToJSDate(value) {
 }
 
 const uploadExcel = async (req, res) => {
+  console.log("UPLOAD API HIT");
   try {
+
+    console.log("UPLOAD STARTED");
+
+    console.log("File Received:", !!req.file);
+    console.log("STEP 1");
 
     const workbook = XLSX.read(
       req.file.buffer,
@@ -29,12 +35,16 @@ const uploadExcel = async (req, res) => {
       }
     );
 
+    console.log("STEP 2");
+
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
 
     const data = XLSX.utils.sheet_to_json(sheet, {
       defval: "",
     });
+
+     console.log("STEP 3", data.length);
 
     let totalInserted = 0;
 
@@ -62,6 +72,8 @@ const uploadExcel = async (req, res) => {
 
       db.run("BEGIN TRANSACTION");
 
+      const stmt = db.prepare(query);
+
       data.forEach((row) => {
 
         // Candidate 1
@@ -72,7 +84,17 @@ const uploadExcel = async (req, res) => {
           c1++;
           totalInserted++;
 
-          db.run(query, [
+          // db.run(query, [
+          //   row["Candidate Name"] || "",
+          //   String(row["Contact Number"] || "").replace(".0", ""),
+          //   row["Attendance App ID"] || "",
+          //   row["HO ID"] || "",
+          //   excelDateToJSDate(row["OJT Start Date"]),
+          //   excelDateToJSDate(row["OJT End Date"]),
+          //   excelDateToJSDate(row["LWD"]),
+          //   row["Vertical Type"] || "MX",
+          // ]);
+          stmt.run([
             row["Candidate Name"] || "",
             String(row["Contact Number"] || "").replace(".0", ""),
             row["Attendance App ID"] || "",
@@ -92,7 +114,17 @@ const uploadExcel = async (req, res) => {
           c2++;
           totalInserted++;
 
-          db.run(query, [
+          // db.run(query, [
+          //   row["Candidate Name_1"] || "",
+          //   String(row["Contact Number_1"] || "").replace(".0", ""),
+          //   row["Attendance App ID_1"] || "",
+          //   row["HO ID_1"] || "",
+          //   excelDateToJSDate(row["OJT start date"]),
+          //   excelDateToJSDate(row["OJT end date"]),
+          //   excelDateToJSDate(row["LWD_1"]),
+          //   row["Vertical Type"] || "MX",
+          // ]);
+          stmt.run([
             row["Candidate Name_1"] || "",
             String(row["Contact Number_1"] || "").replace(".0", ""),
             row["Attendance App ID_1"] || "",
@@ -112,7 +144,17 @@ const uploadExcel = async (req, res) => {
           c3++;
           totalInserted++;
 
-          db.run(query, [
+          // db.run(query, [
+          //   row["Candidate Name_2"] || "",
+          //   String(row["Contact Number_2"] || "").replace(".0", ""),
+          //   row["Attendance App ID_2"] || "",
+          //   row["HO ID_2"] || "",
+          //   excelDateToJSDate(row["OJT start date_1"]),
+          //   excelDateToJSDate(row["OJT end date_1"]),
+          //   excelDateToJSDate(row["LWD_2"]),
+          //   row["Vertical Type"] || "MX",
+          // ]);
+          stmt.run([
             row["Candidate Name_2"] || "",
             String(row["Contact Number_2"] || "").replace(".0", ""),
             row["Attendance App ID_2"] || "",
@@ -125,6 +167,8 @@ const uploadExcel = async (req, res) => {
         }
 
       });
+
+      stmt.finalize();
 
       db.run("COMMIT", (err) => {
 
@@ -151,6 +195,8 @@ const uploadExcel = async (req, res) => {
     });
 
   } catch (error) {
+
+    console.log("UPLOAD ERROR");
 
     console.log(error);
 

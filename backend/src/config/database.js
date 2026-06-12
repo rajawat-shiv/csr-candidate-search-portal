@@ -5,6 +5,9 @@ const db = new sqlite3.Database("./candidate.db", (err) => {
     console.log(err.message);
   } else {
     console.log("SQLite Connected");
+
+    db.run("PRAGMA journal_mode = WAL");
+    db.run("PRAGMA synchronous = NORMAL");
   }
 });
 
