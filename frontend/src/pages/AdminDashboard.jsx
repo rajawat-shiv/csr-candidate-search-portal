@@ -47,11 +47,6 @@ function AdminDashboard() {
         }
     };
 
-    // const logout = () => {
-    //     localStorage.removeItem("token");
-
-    //     window.location.reload();
-    // };
     const logout = () => {
         localStorage.removeItem("token");
         window.location.href = "/admin";
@@ -66,23 +61,17 @@ function AdminDashboard() {
 
                 {/* Header */}
 
-                <div className="relative bg-white rounded-3xl shadow-lg p-6 mb-6">
+                <div className="bg-white rounded-3xl shadow-lg p-4 sm:p-6 mb-6">
 
-                    <button
-                        onClick={logout}
-                        className="absolute top-6 right-6 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl"
-                    >
-                        Logout
-                    </button>
-
-                    <h1 className="text-4xl font-bold text-center text-slate-800">
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-slate-800">
                         CSR Candidate Admin Dashboard
                     </h1>
 
-                    <p className="text-center text-slate-500 mt-2">
+                    <p className="text-center text-sm sm:text-base text-slate-500 mt-2">
                         MX & CE Candidate Management System
                     </p>
-                    <div className="mt-4 flex justify-center gap-3 flex-wrap">
+
+                    <div className="mt-4 flex flex-col sm:flex-row justify-center items-center gap-3">
 
                         <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-medium">
                             👋 Welcome Admin
@@ -91,6 +80,13 @@ function AdminDashboard() {
                         <span className="bg-slate-100 text-slate-600 px-4 py-2 rounded-full">
                             🕒 Last Login: {lastLogin}
                         </span>
+
+                        <button
+                            onClick={logout}
+                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl"
+                        >
+                            Logout
+                        </button>
 
                     </div>
 
@@ -105,7 +101,7 @@ function AdminDashboard() {
 
                 {/* Stats */}
 
-                <div className="grid md:grid-cols-5 gap-4 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
 
                     <div className="bg-white rounded-3xl shadow-lg p-5 border-l-4 border-blue-500">
 

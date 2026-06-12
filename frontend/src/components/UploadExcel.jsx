@@ -99,19 +99,19 @@ function UploadExcel({
         )}
       </div>
 
-      <div className="flex gap-4 items-center">
+      <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
 
         <input
           type="file"
           accept=".xlsx,.xls"
           onChange={(e) => setFile(e.target.files[0])}
-          className="flex-1 border border-slate-300 rounded-xl p-3"
+          className="w-full border border-slate-300 rounded-xl p-3"
         />
 
         <button
           onClick={uploadFile}
           disabled={loading}
-          className={`px-6 py-3 rounded-xl text-white font-semibold transition ${loading
+          className={`w-full sm:w-auto px-6 py-3 rounded-xl text-white font-semibold transition ${loading
             ? "bg-slate-400 cursor-not-allowed"
             : "bg-blue-600 hover:bg-blue-700"
             }`}
@@ -140,7 +140,7 @@ function UploadExcel({
             "Upload"
           )}
         </button>
-        <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs whitespace-nowrap ml-3">
+        <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs whitespace-nowrap text-center">
           🔒 Admin Only
         </span>
       </div>

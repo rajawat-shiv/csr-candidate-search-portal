@@ -307,7 +307,7 @@ function SearchCandidate({
           >
             {/* Header */}
 
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
 
               <div>
 
@@ -343,7 +343,7 @@ function SearchCandidate({
 
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
 
                 <button
                   onClick={() => {
@@ -379,14 +379,14 @@ LWD: ${candidate.lwd}
 
             </div>
 
-            <div className="grid grid-cols-3 gap-3 mb-5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
 
               <button
                 onClick={() => copyText(candidate.contact_number)}
                 className="bg-blue-50 hover:bg-blue-100 rounded-2xl p-4"
               >
                 <p className="text-gray-500 text-sm">Contact</p>
-                <h3 className="font-bold text-xl">
+                <h3 className="font-bold text-lg sm:text-xl break-all">
                   {candidate.contact_number}
                 </h3>
               </button>
@@ -396,7 +396,7 @@ LWD: ${candidate.lwd}
                 className="bg-purple-50 hover:bg-purple-100 rounded-2xl p-4"
               >
                 <p className="text-gray-500 text-sm">Attendance</p>
-                <h3 className="font-bold text-xl">
+                <h3 className="font-bold text-lg sm:text-xl break-all">
                   {candidate.attendance_app_id}
                 </h3>
               </button>
@@ -406,7 +406,7 @@ LWD: ${candidate.lwd}
                 className="bg-green-50 hover:bg-green-100 rounded-2xl p-4"
               >
                 <p className="text-gray-500 text-sm">HO ID</p>
-                <h3 className="font-bold text-xl">
+                <h3 className="font-bold text-lg sm:text-xl break-all">
                   {
                     candidate.ho_id === "-" ||
                       candidate.ho_id === "NA"
@@ -421,7 +421,7 @@ LWD: ${candidate.lwd}
 
             <div className="grid md:grid-cols-2 gap-7 mt-5 ">
 
-              <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-4 rounded-2xl border border-slate-200">
+              <div className="bg-gradient-to-br text-center from-slate-50 to-slate-100 p-4 rounded-2xl border border-slate-200">
                 <p className="font-semibold">
                   <FaCalendarAlt className="inline mr-2" />
                   OJT Start Date
@@ -430,7 +430,7 @@ LWD: ${candidate.lwd}
                 <p>{candidate.ojt_start_date}</p>
               </div>
 
-              <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-4 rounded-2xl border border-slate-200">
+              <div className="bg-gradient-to-br text-center from-slate-50 to-slate-100 p-4 rounded-2xl border border-slate-200">
                 <p className="font-semibold">
                   📅 OJT End Date
                 </p>
