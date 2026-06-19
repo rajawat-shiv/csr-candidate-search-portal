@@ -142,7 +142,8 @@ function SearchCandidate({
   const fetchCandidate = async () => {
     try {
       const res = await axios.get(
-        `https://csr-candidate-backend.onrender.com/api/candidates/search?q=${debouncedSearch}`
+        // `https://csr-candidate-backend.onrender.com/api/candidates/search?q=${debouncedSearch}`
+        "http://localhost:5000/api/candidates/search"
       );
 
       if (res.data.data && res.data.data.length > 0) {

@@ -23,10 +23,13 @@ const uploadExcel = async (req, res) => {
   console.log("UPLOAD API HIT");
   try {
 
-    console.log("UPLOAD STARTED");
+    // console.log("UPLOAD STARTED");
 
     console.log("File Received:", !!req.file);
-    console.log("STEP 1");
+    console.time("TOTAL_UPLOAD");
+
+    console.time("READ_EXCEL");
+    // console.log("STEP 1");
 
     const workbook = XLSX.read(
       req.file.buffer,
@@ -34,17 +37,22 @@ const uploadExcel = async (req, res) => {
         type: "buffer",
       }
     );
-
+      console.timeEnd("READ_EXCEL");
     console.log("STEP 2");
 
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
 
+    console.time("JSON_CONVERSION");
+
     const data = XLSX.utils.sheet_to_json(sheet, {
       defval: "",
     });
 
-     console.log("STEP 3", data.length);
+    //  console.log("STEP 3", data.length);
+    console.timeEnd("JSON_CONVERSION");
+
+    console.time("DB_INSERT");
 
     let totalInserted = 0;
 
@@ -171,6 +179,8 @@ const uploadExcel = async (req, res) => {
       stmt.finalize();
 
       db.run("COMMIT", (err) => {
+        console.timeEnd("DB_INSERT");
+        console.timeEnd("TOTAL_UPLOAD");
 
         if (err) {
           return res.status(500).json({

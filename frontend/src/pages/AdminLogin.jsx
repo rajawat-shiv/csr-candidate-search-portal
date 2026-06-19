@@ -19,7 +19,8 @@ function AdminLogin() {
     const handleLogin = async () => {
         try {
             const res = await axios.post(
-                "https://csr-candidate-backend.onrender.com/api/auth/login",
+                // "https://csr-candidate-backend.onrender.com/api/auth/login",
+                    "http://localhost:5000/api/auth/login",
                 {
                     email,
                     password,
