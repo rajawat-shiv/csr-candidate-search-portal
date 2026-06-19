@@ -23,23 +23,25 @@ function excelDateToJSDate(value) {
 const uploadExcel = async (req, res) => {
   try {
 
-  const workbook2 = new ExcelJS.Workbook();
+    console.time("TOTAL_UPLOAD");
 
-  await workbook2.xlsx.load(req.file.buffer);
+    const workbook2 = new ExcelJS.Workbook();
 
-  const worksheet = workbook2.worksheets[0];
+    await workbook2.xlsx.load(req.file.buffer);
+
+    const worksheet = workbook2.worksheets[0];
 
 
     console.log("File Received:", !!req.file);
-  
 
+    console.time("READ_EXCEL");
     const workbook = XLSX.read(
       req.file.buffer,
       {
         type: "buffer",
       }
     );
-      console.timeEnd("READ_EXCEL");
+    console.timeEnd("READ_EXCEL");
     console.log("STEP 2");
 
     const sheetName = workbook.SheetNames[0];
@@ -71,6 +73,9 @@ const uploadExcel = async (req, res) => {
       )
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
+
+
+    console.time("DB_INSERT");
 
     db.serialize(() => {
 
