@@ -1,5 +1,6 @@
 const XLSX = require("xlsx");
 const db = require("../config/database");
+const ExcelJS = require("exceljs");
 
 function excelDateToJSDate(value) {
   if (!value || value === "NA" || value === "-") {
@@ -20,16 +21,17 @@ function excelDateToJSDate(value) {
 }
 
 const uploadExcel = async (req, res) => {
-  console.log("UPLOAD API HIT");
   try {
 
-    // console.log("UPLOAD STARTED");
+  const workbook2 = new ExcelJS.Workbook();
+
+  await workbook2.xlsx.load(req.file.buffer);
+
+  const worksheet = workbook2.worksheets[0];
+
 
     console.log("File Received:", !!req.file);
-    console.time("TOTAL_UPLOAD");
-
-    console.time("READ_EXCEL");
-    // console.log("STEP 1");
+  
 
     const workbook = XLSX.read(
       req.file.buffer,
@@ -49,10 +51,6 @@ const uploadExcel = async (req, res) => {
       defval: "",
     });
 
-    //  console.log("STEP 3", data.length);
-    console.timeEnd("JSON_CONVERSION");
-
-    console.time("DB_INSERT");
 
     let totalInserted = 0;
 
@@ -206,7 +204,7 @@ const uploadExcel = async (req, res) => {
 
   } catch (error) {
 
-    console.log("UPLOAD ERROR");
+    console.log("EXCELJS ERROR");
 
     console.log(error);
 
