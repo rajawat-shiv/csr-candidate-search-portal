@@ -26,8 +26,7 @@ function UploadExcel({
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        // "https://csr-candidate-backend.onrender.com/api/candidates/upload",
-        "http://localhost:5000/api/candidates/upload",
+        "https://csr-candidate-backend.onrender.com/api/candidates/upload",
         formData,
         {
           headers: {
